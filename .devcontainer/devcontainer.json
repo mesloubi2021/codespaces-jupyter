@@ -16,5 +16,13 @@
         "ms-python.python"
       ]
     }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/nvidia-cuda:1": {
+      "installCudnn": true
+    },
+    "ghcr.io/devcontainers/features/python:1": {
+      "installJupyterlab": true
+    }
   }
 }
