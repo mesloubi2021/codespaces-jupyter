@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: St. Louis Places API
+  description: "An API for discovering places of interest in St. Louis, Missouri."
+  version: 1.0.0
+servers:
+- url: https://api.example.com/v1
+paths:
+  /places:
+    get:
+      summary: Get places of interest in St. Louis
+      description: |
+        This endpoint allows you to retrieve a list of places of interest in St. Louis, Missouri based on keywords and a radius.
+      parameters:
+      - name: keyword
+        in: query
+        description: The keyword to search for places.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: radius
+        in: query
+        description: The search radius in meters.
+        required: true
+        style: form
+        explode: true
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+      - name: apiKey
+        in: query
+        description: Your Google Places API key.
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: A list of places of interest in St. Louis.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/inline_response_200'
+      security:
+      - apiKey: []
+components:
+  schemas:
+    inline_response_200_places:
+      type: object
+      properties:
+        name:
+          type: string
+        address:
+          type: string
+        rating:
+          type: number
+        photos:
+          type: array
+          items:
+            type: string
+      example:
+        address: address
+        name: name
+        rating: 0.8008281904610115
+        photos:
+        - photos
+        - photos
+    inline_response_200:
+      type: object
+      properties:
+        places:
+          type: array
+          items:
+            $ref: '#/components/schemas/inline_response_200_places'
+      example:
+        places:
+        - address: address
+          name: name
+          rating: 0.8008281904610115
+          photos:
+          - photos
+          - photos
+        - address: address
+          name: name
+          rating: 0.8008281904610115
+          photos:
+          - photos
+          - photos
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      name: key
+      in: query
