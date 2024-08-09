@@ -119,13 +119,14 @@ def normalized_col(df, columns):
 
 def predict_lotto(lotto, df, tests, runs=100, debug=False):
     testCols = [ i["name"] for i in tests]
-    columns = [f"Draw{i}" for i in range(1, lotto.noOfDraws + 1)] + testCols
+    columns = [f"Draw{i}" for i in range(1, lotto.noOfDraws + 1)]
     
     if debug:
-        columns += [s.replace("Test", "") for s in testCols] + ["msg"]
+        testCols += [s.replace("Test", "") for s in testCols] + ["msg"]
 
     # Generate random numbers and analyze the numbers
     data = []
+    data_res = []
     
     # Generate number frequency for generating random lotto numbers using last 20? draws
     t = pd.melt(df.iloc[0:20], id_vars='Date', value_vars=[f'Draw{i}' for i in range(1, lotto.noOfDraws + 1)], value_name='Draw')
@@ -137,15 +138,23 @@ def predict_lotto(lotto, df, tests, runs=100, debug=False):
         counts = [ c+1 for c in counts]
         
     for i in range(runs):
-        numList = lotto.generate_lotto_nums(counts)
+        # Prevent duplicate lotto draws
+        while True:
+            numList = lotto.generate_lotto_nums(counts)
+            if numList not in data:
+                break
+        data.append(numList)
         result, v, m = analyze_generated_nums(numList, df, tests)
         
         if debug:
-            data.append(numList + result + v + [m])
+            data_res.append(result + v + [m])
         else:
-            data.append(numList + result)
+            data_res.append(result)
 
     df = pd.DataFrame(data, columns=columns)
+    df_res = pd.DataFrame(data_res, columns=testCols)
+
+    df = df.join(df_res)
 
     # Normalize the test columns
     df = normalized_col(df, testCols)
