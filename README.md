@@ -1,4 +1,4 @@
-# GitHub Codespaces ♥️ Jupyter Notebooks
+# GitHub Codespaces
 
 [![Open in Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new?repo=github/codespaces-jupyter)
 
